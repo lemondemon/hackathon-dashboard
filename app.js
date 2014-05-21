@@ -1,10 +1,11 @@
-var request = require('request');
-var async = require('async');
-var moment = require('moment');
-var yaml = require('js-yaml');
-var fs   = require('fs');
+var request = require ('request'),
+    async = require ('async'),
+    moment = require ('moment'),
+    yaml = require ('js-yaml'),
+    fs   = require ('fs'),
+    express = require ('express');
 
-var config = yaml.safeLoad (fs.readFileSync(__dirname + '/config.yml', 'utf8'));
+var config = yaml.safeLoad (fs.readFileSync (__dirname + '/config.yml', 'utf8'));
 
 var options = {
     url: 'https://github.com/',
@@ -14,20 +15,31 @@ var options = {
     json: 1
 };
 
-var events = [];
-var counters = {
-    'PullRequestEvent': 0,
-    'PushEvent': 0
-};
+// main data container
+var data = {};
+
+var app = express();
+
+app.get('/', function(req, res){
+  res.send(JSON.stringify(data));
+});
+
+var server = app.listen(process.env.PORT || 3000, function() {
+    console.log('Listening on port %d', server.address().port);
+});
+
 
 fetchData();
 
 function fetchData () {
     // clear everything
-    events = [];
-    counters = {
-        'PullRequestEvent': 0,
-        'PushEvent': 0
+    data = {
+        timestamp: 0,
+        events: [],
+        counters: {
+            'PullRequestEvent': 0,
+            'PushEvent': 0
+        }
     };
 
     async.each (config.participants, function (participant, callback) {
@@ -45,7 +57,7 @@ function fetchData () {
                     if (created.unix() >= moment(config.event_start).unix()) {
 
                         if (event.type == 'PullRequestEvent' && event.payload.action == 'opened') {
-                            events.push ({
+                            data.events.push ({
                                 login: event.actor,
                                 type: event.type,
                                 repo_owner: event.repository.owner,
@@ -58,10 +70,10 @@ function fetchData () {
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
                             });
-                            counters[event.type]++;
+                            data.counters[event.type]++;
 
                         } else if (event.type == 'PushEvent') {
-                            events.push ({
+                            data.events.push ({
                                 login: event.actor,
                                 type: event.type,
                                 repo_owner: event.repository.owner,
@@ -70,7 +82,7 @@ function fetchData () {
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
                             });
-                            counters[event.type]++;
+                            data.counters[event.type]++;
                         }
                     }
                 }
@@ -79,10 +91,13 @@ function fetchData () {
         });
 
     }, function (error) {
-        events.sort (function (a, b) {
+        data.events.sort (function (a, b) {
             return (b.created_unix - a.created_unix);
         });
-        console.log (events, counters);
+        data.timestamp = moment();
+        console.log ('Data fetched:', data.timestamp.format(), data.counters);
+
+        setTimeout (fetchData, 15000);
     });
 }
 
