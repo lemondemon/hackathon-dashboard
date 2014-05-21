@@ -1,7 +1,6 @@
 var request = require('request');
 var async = require('async');
 var moment = require('moment');
-var yaml_config = require('node-yaml-config');
 var yaml = require('js-yaml');
 var fs   = require('fs');
 
