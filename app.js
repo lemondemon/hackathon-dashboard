@@ -15,58 +15,75 @@ var options = {
 };
 
 var events = [];
+var counters = {
+    'PullRequestEvent': 0,
+    'PushEvent': 0
+};
 
-async.each (config['participants'], function (participant, callback) {
-    //console.log ('---' + participant + '---');
+fetchData();
 
-    var participant_options = options;
-    participant_options['url'] = 'https://github.com/' + participant + '.json';
+function fetchData () {
+    // clear everything
+    events = [];
+    counters = {
+        'PullRequestEvent': 0,
+        'PushEvent': 0
+    };
 
-    request(participant_options, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+    async.each (config.participants, function (participant, callback) {
+        var participant_options = options;
+        participant_options.url = 'https://github.com/' + participant + '.json';
 
-            for (var i = 0; i < body.length; i++) {
-                var event = body[i];
-                var created = moment (event['created_at']);
+        request(participant_options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
 
-                if (created.unix() >= moment(config['event_start']).unix()) {
+                // iterating through user's github activity
+                for (var i = 0; i < body.length; i++) {
+                    var event = body[i];
+                    var created = moment (event.created_at);
 
-            	    if (event['type'] == 'PullRequestEvent' && event['payload']['action'] == 'opened') {
-                		events.push ({
-                            login: event['actor'],
-                		    type: event['type'],
-                		    repo_owner: event['repository']['owner'],
-                		    repo: event['repository']['name'],  
-                		    title: event['payload']['pull_request']['title'],
-                            commits: event['payload']['pull_request']['commits'],
-                            additions: event['payload']['pull_request']['additions'],
-                            deletions: event['payload']['pull_request']['deletions'],
-                            gravatar: event['actor_attributes']['gravatar_id'],
-                            created_at: created.fromNow (),
-                            created_unix: created.unix(),
-                		});
+                    if (created.unix() >= moment(config.event_start).unix()) {
 
-            	    } else if (event['type'] == 'PushEvent') {
-                        events.push ({
-                            login: event['actor'],
-                            type: event['type'],
-                            repo_owner: event['repository']['owner'],
-                            repo: event['repository']['name'],
-                            gravatar: event['actor_attributes']['gravatar_id'],
-                            created_at: created.fromNow (),
-                            created_unix: created.unix(),
-                        });
+                        if (event.type == 'PullRequestEvent' && event.payload.action == 'opened') {
+                            events.push ({
+                                login: event.actor,
+                                type: event.type,
+                                repo_owner: event.repository.owner,
+                                repo: event.repository.name,
+                                title: event.payload.pull_request.title,
+                                commits: event.payload.pull_request.commits,
+                                additions: event.payload.pull_request.additions,
+                                deletions: event.payload.pull_request.deletions,
+                                gravatar: event.actor_attributes.gravatar_id,
+                                created_at: created.fromNow (),
+                                created_unix: created.unix(),
+                            });
+                            counters[event.type]++;
+
+                        } else if (event.type == 'PushEvent') {
+                            events.push ({
+                                login: event.actor,
+                                type: event.type,
+                                repo_owner: event.repository.owner,
+                                repo: event.repository.name,
+                                gravatar: event.actor_attributes.gravatar_id,
+                                created_at: created.fromNow (),
+                                created_unix: created.unix(),
+                            });
+                            counters[event.type]++;
+                        }
                     }
                 }
+                callback ();
             }
-            callback ();
-        }
-    });
+        });
 
-}, function (error) {
-    events.sort (function (a, b) {
-        return (b.created_unix - a.created_unix);
+    }, function (error) {
+        events.sort (function (a, b) {
+            return (b.created_unix - a.created_unix);
+        });
+        console.log (events, counters);
     });
-    console.log (events);
-});
+}
+
 
