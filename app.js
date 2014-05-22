@@ -3,7 +3,6 @@ var request = require ('request'),
     moment = require ('moment'),
     yaml = require ('js-yaml'),
     fs   = require ('fs'),
-    express = require ('express'),
     engine = require('engine.io');
 
 var config = yaml.safeLoad (fs.readFileSync (__dirname + '/config.yml', 'utf8'));
@@ -19,12 +18,6 @@ var options = {
 var data = {};
 var server_socket;
 var server_connected = false;
-
-var app = express();
-
-app.get('/', function(req, res){
-  res.send(JSON.stringify(data));
-});
 
 var server = engine.listen(process.env.PORT || 3000);
 
@@ -109,7 +102,7 @@ function fetchData () {
         console.log ('Data fetched:', data.timestamp.format(), data.counters);
         
         if (server_connected) {
-            server_socket.send (data);
+            server_socket.send (JSON.stringify(data));
             setTimeout (fetchData, 15000);
         }
     });
