@@ -3,7 +3,8 @@ var request = require ('request'),
     moment = require ('moment'),
     yaml = require ('js-yaml'),
     fs   = require ('fs'),
-    express = require ('express');
+    express = require ('express'),
+    engine = require('engine.io');
 
 var config = yaml.safeLoad (fs.readFileSync (__dirname + '/config.yml', 'utf8'));
 
@@ -15,8 +16,9 @@ var options = {
     json: 1
 };
 
-// main data container
 var data = {};
+var server_socket;
+var server_connected = false;
 
 var app = express();
 
@@ -24,12 +26,21 @@ app.get('/', function(req, res){
   res.send(JSON.stringify(data));
 });
 
-var server = app.listen(process.env.PORT || 3000, function() {
-    console.log('Listening on port %d', server.address().port);
+var server = engine.listen(process.env.PORT || 3000);
+
+server.on('connection', function (socket){
+    server_socket = socket;
+    server_connected = true;
+    console.log ('Client connected');
+
+    fetchData();
+
+    socket.on('close', function () {
+        server_connected = false;
+        console.log ('Client disconnected');
+    });
 });
 
-
-fetchData();
 
 function fetchData () {
     // clear everything
@@ -86,8 +97,8 @@ function fetchData () {
                         }
                     }
                 }
-                callback ();
             }
+            callback ();
         });
 
     }, function (error) {
@@ -96,8 +107,11 @@ function fetchData () {
         });
         data.timestamp = moment();
         console.log ('Data fetched:', data.timestamp.format(), data.counters);
-
-        setTimeout (fetchData, 15000);
+        
+        if (server_connected) {
+            server_socket.send (data);
+            setTimeout (fetchData, 15000);
+        }
     });
 }
 
