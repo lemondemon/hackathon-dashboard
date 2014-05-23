@@ -1,19 +1,48 @@
-<h1>home</h1><br />
+<div class="messages">
+	<div class="message" ng-repeat="item in events">
+		<img src="http://www.gravatar.com/avatar/{{item.gravatar}}?s=130">
+		<div class="info">
+			<div class="date">{{item.created_at}}</div>
+			<div class="what"><b>{{item.login}}</b> <span ng-if="item.type == 'PushEvent'">pushed to <b>master</b> at</span><span ng-if="item.type == 'PullRequestEvent'">opened pull request</span> <b>{{item.repo_owner}}/{{item.repo}}</b></div>
+			<div class="why"></div>
+		</div>
+	</div>
+</div>
 
-Last refresh: {{lastRefresh}}<br />
+<div class="statisctics">
+	
+	<div class="pullRequests">
+		<label>Pull Requests</label>
+		<span>{{counters.PullRequestEvent}}</span>
+	</div>
 
-Pull Requests: {{counters.PullRequestEvent}}<br />
-Pushes: {{counters.PushEvent}}<br />
+	<div class="pushes">
+		<label>Pushes</label>
+		<span>{{counters.PushEvent}}</span>
+	</div>
 
-Events:<br />
-<ul class="eventsList">
-	<li class="{{item.type}}" ng-repeat="item in events">
-		{{item.created_at}}::
-		{{item.created_unix}}::
-		{{item.gravatar}}::
-		{{item.login}}::
-		{{item.repo}}::
-		{{item.repo_owner}}::
-		{{item.type}}
-	</li>
-</ul>
+</div>
+
+<div class="publicMessage" style="display: none;">Za <b>5 minut</b> przyjdzie pizza. Dziś stawia Sławek</div>
+
+<div class="logo"></div>
+
+<div id="pullRequestModal" class="pullRequest" style="display: none">
+
+	<img src="https://avatars1.githubusercontent.com/u/893082?s=260">
+
+	<div class="stars">
+		<div class="tl"></div>
+		<div class="cl"></div>
+		<div class="bl"></div>
+		<div class="tr"></div>
+		<div class="cr"></div>
+		<div class="br"></div>
+	</div>
+
+	<h1>New pull request</h1>
+
+	<div class="message"><b>slawekp</b> pushed to <b>master</b> at <b>slawekp/fixfusion</b></div>
+	<div class="comment">b211878  Zlinkowane z facebookiem.</div>
+
+</div>
