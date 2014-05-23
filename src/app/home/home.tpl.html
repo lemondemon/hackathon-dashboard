@@ -27,7 +27,7 @@
 
 <div id="pullRequestModal" class="pullRequest" style="display: none">
 
-	<img src="https://avatars1.githubusercontent.com/u/893082?s=260">
+	<img src="http://www.gravatar.com/avatar/{{pullRequest.gravatar}}?s=260">
 
 	<div class="stars">
 		<div class="tl"></div>
@@ -40,7 +40,7 @@
 
 	<h1>New pull request</h1>
 
-	<div class="message"><b>slawekp</b> pushed to <b>master</b> at <b>slawekp/fixfusion</b></div>
-	<div class="comment">b211878  Zlinkowane z facebookiem.</div>
+	<div class="message"><b>{{pullRequest.login}}</b> opened pull request <b>{{pullRequest.repo_owner}}/{{pullRequest.repo}}</b></div>
+	<div class="comment">{{pullRequest.title}}</div>
 
 </div>
