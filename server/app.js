@@ -79,7 +79,9 @@ function fetchData () {
                             });
                             data.counters[event.type]++;
 
-                        } else if (event.type == 'PushEvent') {
+                        } else if (event.type == 'PushEvent' && event.repository != undefined) {
+                            console.log ('push!');
+                            console.log (event.repository);
                             data.events.push ({
                                 login: event.actor,
                                 type: event.type,
