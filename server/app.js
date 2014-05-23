@@ -6,9 +6,11 @@ var request = require ('request'),
     yaml = require ('js-yaml'),
     fs   = require ('fs'),
     url = require ('url'),
+    S = require('string'),
     app = require ('express')(),
     http = require ('http').createServer (app).listen (process.env.PORT || 3000),
     engine = require ('engine.io').attach (http);
+
 
 var config = yaml.safeLoad (fs.readFileSync (__dirname + '/config.yml', 'utf8'));
 
@@ -24,7 +26,7 @@ var feed = {};
 var timeout;
 var client_socket;
 var client_connected = false;
-var message;
+var message = '';
 
 engine.on('connection', function (socket) {
     client_socket = socket;
@@ -44,7 +46,11 @@ engine.on('connection', function (socket) {
 // "API" for pushing a public message
 app.get('/message', function(req, res){
     var query = url.parse (req.url, true).query;
-    message = query.text;
+    if (query.text != undefined) {
+        message = query.text;
+    } else {
+        message = '';
+    }
 
     sendMessage ();
     res.send ('ok');
@@ -55,7 +61,7 @@ function sendMessage () {
     if (client_connected) {
         var data = {
             type: 'message',
-            data: message
+            data: S(message).escapeHTML().s
         }
         client_socket.send (JSON.stringify(data));
     }    
