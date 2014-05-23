@@ -35,6 +35,14 @@ angular.module( 'hackaton.home', [
     });
 })
 
+.filter('branchName', function() {
+    return function(branchPath) {
+        var branchParts = branchPath.split("/");
+        
+        return branchParts.pop();
+    };
+})
+
 /**
 * And of course we define a controller for our route.
 */
@@ -66,6 +74,9 @@ angular.module( 'hackaton.home', [
     };
 
     $scope.handleMessage = function(msg){
+
+        console.log('msg', msg);
+
         $scope.counters = msg.counters;
         $scope.lastRefresh = new Date(msg.timestamp);
         $scope.eventsQueue = [].concat(msg.events.filter(function(row){
@@ -82,8 +93,6 @@ angular.module( 'hackaton.home', [
 
     $scope.addLabel = function(){
 
-        $scope._playSound('beep');
-
         var row = $scope.eventsQueue.pop();
 
         if(row){
@@ -92,6 +101,7 @@ angular.module( 'hackaton.home', [
             if($scope.events.length > 5){
                 $scope.events.pop();
             }
+            $scope._playSound('beep');
             $scope.$apply();
         }else{
             console.log('label not found', $scope.eventsQueue.length);
