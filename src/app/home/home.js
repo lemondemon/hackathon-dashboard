@@ -56,7 +56,7 @@ angular.module( 'hackaton.home', [
         if(typeof $scope.eventsQueue[0] !== 'undefined'){
             $scope.lastEventTimestamp = $scope.eventsQueue[0].created_unix;
             if($scope.eventsQueue.length >= 5){
-                localStorage.setItem('lastEventTimestamp', $scope.eventsQueue[9].created_unix);
+                localStorage.setItem('lastEventTimestamp', $scope.eventsQueue[4].created_unix);
             }
         }
         $scope.$apply();
