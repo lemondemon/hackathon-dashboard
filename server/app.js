@@ -80,14 +80,13 @@ function fetchData () {
                             data.counters[event.type]++;
 
                         } else if (event.type == 'PushEvent' && event.repository != undefined) {
-                            console.log ('push!');
-                            console.log (event.repository);
                             data.events.push ({
                                 login: event.actor,
                                 type: event.type,
                                 repo_owner: event.repository.owner,
                                 repo: event.repository.name,
                                 branch: event.payload.ref,
+                                title: event.payload.shas[0][2],
                                 gravatar: event.actor_attributes.gravatar_id,
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
