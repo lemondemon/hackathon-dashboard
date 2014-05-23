@@ -161,9 +161,9 @@ module.exports = function ( grunt ) {
       build_css: {
         src: [
           '<%= vendor_files.css %>',
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+          '<%= compass.dev.options.cssDir %>/*.css'
         ],
-        dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+        dest: '<%= compass.dev.options.cssDir %>/minified.css'
       },
       /**
        * The `compile_js` target is the concatenation of our application source
@@ -235,25 +235,24 @@ module.exports = function ( grunt ) {
         }
       }
     },
-
-    /**
-     * `grunt-contrib-less` handles our LESS compilation and uglification automatically.
-     * Only our `main.less` file is included in compilation; all other files
-     * must be imported from this file.
-     */
-    less: {
-      build: {
-        files: {
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
+    compass: {
+      dist: {
+        options: {
+          sassDir: 'src/sass',
+          cssDir: '<%= build_dir %>/assets/styles/',
+          environment: 'production',
+          raw: "preferred_syntax = :scss\n"
         }
       },
-      compile: {
-        files: {
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
-        },
+
+      dev: {
         options: {
-          cleancss: true,
-          compress: true
+          outputStyle: 'compact',
+          sassDir: 'src/sass',
+          cssDir: '<%= build_dir %>/assets/styles/',
+          imagesDir: 'assets/images/',
+          environment: 'development',
+          raw: "preferred_syntax = :scss\n"
         }
       }
     },
@@ -372,7 +371,7 @@ module.exports = function ( grunt ) {
           '<%= html2js.common.dest %>',
           '<%= html2js.app.dest %>',
           '<%= vendor_files.css %>',
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+          '<%= compass.dev.options.cssDir %>/*.css'
         ]
       },
 
@@ -386,7 +385,7 @@ module.exports = function ( grunt ) {
         src: [
           '<%= concat.compile_js.dest %>',
           '<%= vendor_files.css %>',
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+          '<%= compass.dev.options.cssDir %>/*.css'
         ]
       }
     },
@@ -495,9 +494,9 @@ module.exports = function ( grunt ) {
       /**
        * When the CSS files change, we need to compile and minify them.
        */
-      less: {
-        files: [ 'src/**/*.less' ],
-        tasks: [ 'less:build' ]
+      sass: {
+        files: [ 'src/**/*.scss' ],
+        tasks: 'compassCompile'
       }//,
 
       /**
@@ -551,7 +550,7 @@ module.exports = function ( grunt ) {
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask( 'build', [
-    'clean', 'html2js', 'jshint', /*'coffeelint', 'coffee',*/ 'less:build',
+    'clean', 'html2js', 'jshint', /*'coffeelint', 'coffee', 'less:build', */ 'compassCompile',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build'/*, 'karmaconfig',
     'karma:continuous' */
@@ -562,7 +561,7 @@ module.exports = function ( grunt ) {
    * minifying your code.
    */
   grunt.registerTask( 'compile', [
-    'less:compile', 'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
+    'copy:compile_assets', 'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
   ]);
 
   /**
@@ -628,6 +627,21 @@ module.exports = function ( grunt ) {
         });
       }
     });
+  });
+
+  /**
+   *  Task for general compass items 
+   *  This task will determine which environment you have set and run that task
+   */
+  grunt.registerTask('compassCompile', 'Compiling the sass files', function () {
+    //grunt.log.writeln("Current environment: " + grunt.config.get("env").environment);
+
+    /*if (grunt.config.get("env").environment === "production") {
+      grunt.task.run('compass:dist');
+    } else {*/
+      grunt.task.run('compass:dev');
+    //}
+    
   });
 
 };
