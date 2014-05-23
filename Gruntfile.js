@@ -236,21 +236,13 @@ module.exports = function ( grunt ) {
       }
     },
     compass: {
-      dist: {
-        options: {
-          sassDir: 'src/sass',
-          cssDir: '<%= build_dir %>/assets/styles/',
-          environment: 'production',
-          raw: "preferred_syntax = :scss\n"
-        }
-      },
-
       dev: {
         options: {
           outputStyle: 'compact',
           sassDir: 'src/sass',
           cssDir: '<%= build_dir %>/assets/styles/',
           imagesDir: 'assets/images/',
+          imagesPath: 'src/assets/images',
           environment: 'development',
           raw: "preferred_syntax = :scss\n"
         }
