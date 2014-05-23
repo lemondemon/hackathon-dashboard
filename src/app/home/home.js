@@ -47,6 +47,24 @@ angular.module( 'hackaton.home', [
     $scope.labelCounter = 0;
     $scope.lastEventTimestamp = localStorage.getItem('lastEventTimestamp') || 0;
 
+    var sounds = {
+        'mexican': {
+            'src': 'assets/audio/mexicanhatdance.mp3',
+            'volume': '1'
+        },
+        'beep': {
+            'src': 'assets/audio/beep.mp3',
+            'volume': '0.5'
+        }
+    };
+
+    $scope._playSound = function(sound) {
+        console.log('_playSound', sound);
+        var audio = new Audio(sounds[sound].src);
+        audio.volume = sounds[sound].volume;
+        audio.play();
+    };
+
     $scope.handleMessage = function(msg){
         $scope.counters = msg.counters;
         $scope.lastRefresh = new Date(msg.timestamp);
@@ -63,6 +81,8 @@ angular.module( 'hackaton.home', [
     };
 
     $scope.addLabel = function(){
+
+        $scope._playSound('beep');
 
         var row = $scope.eventsQueue.pop();
 
