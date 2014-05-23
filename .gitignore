@@ -4,4 +4,4 @@ node_modules
 *~
 build/
 bin/
-vendor/
+/vendor/
