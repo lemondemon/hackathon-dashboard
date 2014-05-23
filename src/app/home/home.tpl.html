@@ -3,7 +3,7 @@
 		<img src="http://www.gravatar.com/avatar/{{item.gravatar}}?s=130">
 		<div class="info">
 			<div class="date">{{item.created_at}}</div>
-			<div class="what"><b>{{item.login}}</b> <span ng-if="item.type == 'PushEvent'">pushed to <b>master</b> at</span><span ng-if="item.type == 'PullRequestEvent'">opened pull request</span> <b>{{item.repo_owner}}/{{item.repo}}</b></div>
+			<div class="what"><b>{{item.login}}</b> <span ng-if="item.type == 'PushEvent'">pushed to <b>{{item.branch}}</b> at</span><span ng-if="item.type == 'PullRequestEvent'">opened pull request</span> <b>{{item.repo_owner}}/{{item.repo}}</b></div>
 			<div class="why"></div>
 		</div>
 	</div>
