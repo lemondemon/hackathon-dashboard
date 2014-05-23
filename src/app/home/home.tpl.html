@@ -1,0 +1,19 @@
+<h1>home</h1><br />
+
+Last refresh: {{lastRefresh}}<br />
+
+Pull Requests: {{counters.PullRequestEvent}}<br />
+Pushes: {{counters.PushEvent}}<br />
+
+Events:<br />
+<ul class="eventsList">
+	<li class="{{item.type}}" ng-repeat="item in events">
+		{{item.created_at}}::
+		{{item.created_unix}}::
+		{{item.gravatar}}::
+		{{item.login}}::
+		{{item.repo}}::
+		{{item.repo_owner}}::
+		{{item.type}}
+	</li>
+</ul>
