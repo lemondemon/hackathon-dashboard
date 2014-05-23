@@ -102,7 +102,11 @@ function fetchData () {
         console.log ('Data fetched:', data.timestamp.format(), data.counters);
         
         if (server_connected) {
-            server_socket.send (JSON.stringify(data));
+            var message = {
+                type: 'feed',
+                data: data
+            }
+            server_socket.send (JSON.stringify(message));
             setTimeout (fetchData, 15000);
         }
     });
