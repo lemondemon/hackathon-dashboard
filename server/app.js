@@ -1,9 +1,14 @@
+console.log ('App started');
+
 var request = require ('request'),
     async = require ('async'),
     moment = require ('moment'),
     yaml = require ('js-yaml'),
     fs   = require ('fs'),
-    engine = require('engine.io');
+    url = require ('url'),
+    app = require ('express')(),
+    http = require ('http').createServer (app).listen (process.env.PORT || 3000),
+    engine = require ('engine.io').attach (http);
 
 var config = yaml.safeLoad (fs.readFileSync (__dirname + '/config.yml', 'utf8'));
 
@@ -15,31 +20,50 @@ var options = {
     json: 1
 };
 
-var data = {};
+var feed = {};
 var timeout;
-var server_socket;
-var server_connected = false;
+var client_socket;
+var client_connected = false;
+var message;
 
-var server = engine.listen(process.env.PORT || 3000);
-
-server.on('connection', function (socket){
-    server_socket = socket;
-    server_connected = true;
+engine.on('connection', function (socket) {
+    client_socket = socket;
+    client_connected = true;
     console.log ('Client connected');
 
-    fetchData();
+    fetchData ();
+    sendMessage ();
 
     socket.on('close', function () {
-        server_connected = false;
+        client_connected = false;
         clearTimeout (timeout);
         console.log ('Client disconnected');
     });
 });
 
+// "API" for pushing a public message
+app.get('/message', function(req, res){
+    var query = url.parse (req.url, true).query;
+    message = query.text;
+
+    sendMessage ();
+    res.send ('ok');
+});
+
+
+function sendMessage () {
+    if (client_connected) {
+        var data = {
+            type: 'message',
+            data: message
+        }
+        client_socket.send (JSON.stringify(data));
+    }    
+}
 
 function fetchData () {
     // clear everything
-    data = {
+    feed = {
         timestamp: 0,
         events: [],
         counters: {
@@ -63,7 +87,7 @@ function fetchData () {
                     if (created.unix() >= moment(config.event_start).unix()) {
 
                         if (event.type == 'PullRequestEvent' && event.payload.action == 'opened') {
-                            data.events.push ({
+                            feed.events.push ({
                                 login: event.actor,
                                 type: event.type,
                                 repo_owner: event.repository.owner,
@@ -77,10 +101,10 @@ function fetchData () {
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
                             });
-                            data.counters[event.type]++;
+                            feed.counters[event.type]++;
 
                         } else if (event.type == 'PushEvent' && event.repository != undefined) {
-                            data.events.push ({
+                            feed.events.push ({
                                 login: event.actor,
                                 type: event.type,
                                 repo_owner: event.repository.owner,
@@ -91,7 +115,7 @@ function fetchData () {
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
                             });
-                            data.counters[event.type]++;
+                            feed.counters[event.type]++;
                         }
                     }
                 }
@@ -100,18 +124,18 @@ function fetchData () {
         });
 
     }, function (error) {
-        data.events.sort (function (a, b) {
+        feed.events.sort (function (a, b) {
             return (b.created_unix - a.created_unix);
         });
-        data.timestamp = moment();
-        console.log ('Data fetched:', data.timestamp.format(), data.counters);
+        feed.timestamp = moment();
+        console.log ('Data fetched:', feed.timestamp.format(), feed.counters);
         
-        if (server_connected) {
-            var message = {
+        if (client_connected) {
+            var data = {
                 type: 'feed',
-                data: data
+                data: feed
             }
-            server_socket.send (JSON.stringify(message));
+            client_socket.send (JSON.stringify(data));
             timeout = setTimeout (fetchData, 15000);
         }
     });
