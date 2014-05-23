@@ -156,15 +156,6 @@ body {
 	}
 }
 
-.logo {
-	position: absolute;
-	bottom: 40px;
-	right: 36px;
-	width: 126px;
-	height: 66px;
-	background: image-url('ld.png') no-repeat;
-}
-
 .pullRequest {
 	width: 820px;
 	@include border-radius(30px);
