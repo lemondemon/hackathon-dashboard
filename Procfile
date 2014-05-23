@@ -1,1 +1,1 @@
-web: node app.js
+web: node $MAIN_SCRIPT

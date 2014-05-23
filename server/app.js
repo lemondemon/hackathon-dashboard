@@ -16,6 +16,7 @@ var options = {
 };
 
 var data = {};
+var timeout;
 var server_socket;
 var server_connected = false;
 
@@ -30,6 +31,7 @@ server.on('connection', function (socket){
 
     socket.on('close', function () {
         server_connected = false;
+        clearTimeout (timeout);
         console.log ('Client disconnected');
     });
 });
@@ -66,6 +68,7 @@ function fetchData () {
                                 type: event.type,
                                 repo_owner: event.repository.owner,
                                 repo: event.repository.name,
+                                branch: event.payload.pull_request.base.ref,
                                 title: event.payload.pull_request.title,
                                 commits: event.payload.pull_request.commits,
                                 additions: event.payload.pull_request.additions,
@@ -82,6 +85,7 @@ function fetchData () {
                                 type: event.type,
                                 repo_owner: event.repository.owner,
                                 repo: event.repository.name,
+                                branch: event.payload.ref,
                                 gravatar: event.actor_attributes.gravatar_id,
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
@@ -107,7 +111,7 @@ function fetchData () {
                 data: data
             }
             server_socket.send (JSON.stringify(message));
-            setTimeout (fetchData, 15000);
+            timeout = setTimeout (fetchData, 15000);
         }
     });
 }
