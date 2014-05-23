@@ -241,8 +241,7 @@ module.exports = function ( grunt ) {
           outputStyle: 'compact',
           sassDir: 'src/sass',
           cssDir: '<%= build_dir %>/assets/styles/',
-          imagesDir: 'assets/images/',
-          imagesPath: 'src/assets/images',
+          imagesDir: 'assets/images',
           environment: 'development',
           raw: "preferred_syntax = :scss\n"
         }
