@@ -16,6 +16,7 @@ var options = {
 };
 
 var data = {};
+var timeout;
 var server_socket;
 var server_connected = false;
 
@@ -30,6 +31,7 @@ server.on('connection', function (socket){
 
     socket.on('close', function () {
         server_connected = false;
+        clearTimeout (timeout);
         console.log ('Client disconnected');
     });
 });
@@ -109,7 +111,7 @@ function fetchData () {
                 data: data
             }
             server_socket.send (JSON.stringify(message));
-            setTimeout (fetchData, 15000);
+            timeout = setTimeout (fetchData, 15000);
         }
     });
 }
