@@ -50,9 +50,9 @@ angular.module( 'hackaton.home', [
   $scope.handleMessage = function(msg){
     $scope.counters = msg.counters;
     $scope.lastRefresh = new Date(msg.timestamp);
-    $scope.eventsQueue = $scope.eventsQueue.concat(msg.events.filter(function(row){
+    $scope.eventsQueue = [].concat(msg.events.filter(function(row){
       return row.created_unix > $scope.lastEventTimestamp;
-    }));
+    }), $scope.eventsQueue);
     if(typeof $scope.eventsQueue[0] !== 'undefined'){
         $scope.lastEventTimestamp = $scope.eventsQueue[0].created_unix;
     }
