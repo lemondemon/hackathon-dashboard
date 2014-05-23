@@ -1,0 +1,259 @@
+@import "compass/utilities/general/clearfix";
+@import "compass/css3";
+
+body {
+	@include pie-clearfix;
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 400;
+	transform: translate3d(0,0,0);
+	-webkit-font-smoothing: antialiased;
+	color: white;
+	width: 1920px;
+	height: 1080px;
+	background: #1c1c24;
+	position: relative;
+}
+
+.messages {
+	position: absolute;
+
+	.message {
+		@include pie-clearfix;
+		height: 214px;
+		width: 1316px;
+		margin-left: -2px;
+		border-style: solid;
+		border-color: #0b0b0f;
+		border-width: 1px 2px;
+
+		img {
+			display: block;
+			border: 4px solid #17171e;
+			@include border-radius(50%);
+			width: 130px;
+			height: 130px;
+			float: left;
+			margin: 38px 50px;
+		}
+
+		.info {
+			margin-top: 38px;
+			float: left;
+		}
+
+		.date {
+			font-size: 24px;
+			line-height: 36px;
+		}
+
+		.what {
+			font-size: 30px;
+			line-height: 45px;
+			b {
+				font-weight: 400;
+				color: #3c97f8;
+			}
+		}
+
+		.why {
+			color: #9b9dab;
+			font-size: 24px;
+			line-height: 36px;
+		}
+	}
+}
+
+.statisctics {
+	margin: 38px 80px;
+	position: absolute;
+	left: 1320px;
+
+	label {
+		font-size: 35px;
+		line-height: 50px;
+		font-weight: 300;
+		position: relative;
+
+		&:before {
+			content: " ";
+			position: absolute;
+			margin-right: 20px;
+			display: block;
+			width: 16px;
+			height: 16px;
+			@include border-radius(50%);
+			top: 17px;
+			left: -40px;
+		}
+	}
+
+	.pullRequests {
+		margin-bottom: 50px;
+		span {
+			color: #3c97f8;
+		}
+
+		label:before {
+			background-color: #3c97f8;
+		}
+	}
+
+	.commits {
+		span {
+			color: #81ad9b;
+		}
+		
+		label:before {
+			background-color: #81ad9b;
+		}
+	}
+
+	span {
+		font-size: 150px;
+		font-weight: 300;
+		display: block;
+	}
+}
+
+.publicMessage {
+
+	position: absolute;
+	right: 40px;
+	width: 440px;
+	bottom: 250px;
+	background-color: #fcd24c;
+	@include border-radius(30px);
+	padding: 40px;
+	color: #3b270d;
+	font-size: 36px;
+	line-height: 54px;
+
+	b {
+		font-weight: 700;
+	}
+
+	&:after {
+		content: "";
+		position: absolute;
+		background-color: #fcd24c;
+		width: 46px;
+		height: 46px;
+		@include border-radius(50%);
+		bottom: -23px;
+		right: 30px;
+	}
+
+	&:before {
+		content: "";
+		position: absolute;
+		background-color: #fcd24c;
+		width: 26px;
+		height: 26px;
+		@include border-radius(50%);
+		bottom: -55px;
+		right: 20px;
+	}
+}
+
+.logo {
+	position: absolute;
+	bottom: 40px;
+	right: 36px;
+	width: 126px;
+	height: 66px;
+	background: image-url('ld.png') no-repeat;
+}
+
+.pullRequest {
+	width: 820px;
+	@include border-radius(30px);
+	position: absolute;
+	padding: 170px 40px 40px;
+	top: 400px;
+	left: 50%;
+	margin-left: -450px;
+	background-color: rgba(255, 255, 255, 0.95);
+	box-shadow: 0 0 50px 0px black;
+
+	h1 {
+		font-size: 70px;
+		color: #e46a5b;
+		font-weight: 800;
+		text-align: center;
+		text-transform: uppercase;
+		margin-bottom: 20px;
+	}
+
+	&:before {
+		position: absolute;
+		top: -330px;
+		left: 120px;
+		opacity: 0.6;
+		width: 660px;
+		height: 660px;
+		content: "";
+		background: image-url('bg.png') center center no-repeat;
+		z-index: -1;
+	}	
+
+	img {
+		position: absolute;
+		top: -130px;
+		left: 310px;
+		width: 260px;
+		height: 260px;
+		position: absolute;
+		border: 10px solid #fdd655;
+		@include border-radius(50%);
+	}
+
+	.message {
+		font-size: 30px;
+		line-height: 45px;
+		color: #262f31; 
+		b {
+			font-weight: 700;
+		}
+	}
+
+	.comment {
+		font-size: 24px;
+		line-height: 36px;
+		color: #262f31;
+	}
+	
+	/* generete common styles for all stars */
+	$stars: 'tl', 'cl', 'bl', 'tr', 'cr', 'br';
+	@include stars-styles($stars);
+
+	.tl {
+		top: -180px;
+		left: 20%;
+	}
+
+	.cl {
+		top: -50px;
+		left: 18%;
+	}
+
+	.bl {
+		top: 65px;
+		left: 23%;
+	}
+
+	.tr {
+		top: -180px;
+		right: 20%;
+	}
+
+	.cr {
+		top: -50px;
+		right: 18%;
+	}
+
+	.br {
+		top: 65px;
+		right: 23%;
+	}
+
+}

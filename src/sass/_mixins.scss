@@ -1,0 +1,15 @@
+@mixin stars-styles($stars) {
+	
+	@each $star in $stars {
+		
+		.#{$star} { 
+		
+			position: absolute;
+			width: 150px;
+			height: 150px;
+			background: transparent image-url('#{$star}.png') center top no-repeat;
+
+		}
+	} 
+}
+
