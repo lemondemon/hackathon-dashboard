@@ -66,7 +66,7 @@ angular.module( 'hackaton.home', [
     if(row){
         console.log('addingLabel', ++$scope.labelCounter, $scope.eventsQueue.length);
         $scope.events.unshift(row);
-        if($scope.events.length > 10){
+        if($scope.events.length > 5){
           $scope.events.pop();
         }
         $scope.$apply();
