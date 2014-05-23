@@ -52,8 +52,11 @@ angular.module( 'hackaton.home', [
     $scope.counters = {};
     $scope.events = [];
     $scope.eventsQueue = [];
+
     $scope.labelCounter = 0;
     $scope.lastEventTimestamp = localStorage.getItem('lastEventTimestamp') || 0;
+    $scope.pullRequest = {};
+    $scope.pullRequestsQueue = [];
 
     var sounds = {
         'mexican': {
@@ -91,9 +94,22 @@ angular.module( 'hackaton.home', [
         $scope.$apply();
     };
 
+    $scope.handlePublicMessage = function(msg){
+
+        if (msg !== '') {
+            $scope.publicMessage = msg;
+            $scope.showPublicMessage = true;
+        } else {
+            $scope.showPublicMessage = false;
+        }
+
+    };
+
     $scope.addLabel = function(){
 
         var row = $scope.eventsQueue.pop();
+
+        
 
         if(row){
             console.log('addingLabel', ++$scope.labelCounter, $scope.eventsQueue.length);
@@ -101,7 +117,17 @@ angular.module( 'hackaton.home', [
             if($scope.events.length > 5){
                 $scope.events.pop();
             }
+
             $scope._playSound('beep');
+
+
+
+            if (row.type == 'PullRequestEvent') {
+
+            }
+
+            $scope.pullRequest.login = row.login;
+
             $scope.$apply();
         }else{
             console.log('label not found', $scope.eventsQueue.length);
@@ -121,6 +147,8 @@ angular.module( 'hackaton.home', [
         console.log('socket message listener', arguments);
         if(parsedMessage.type === 'feed'){
             $scope.handleMessage(parsedMessage.data);
+        } else if(parsedMessage.type === 'message') {
+            $scope.handlePublicMessage(parsedMessage.data);
         }
     });
 
