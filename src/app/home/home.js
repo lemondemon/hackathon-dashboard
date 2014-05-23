@@ -45,7 +45,7 @@ angular.module( 'hackaton.home', [
   $scope.events = [];
   $scope.eventsQueue = [];
   $scope.labelCounter = 0;
-  $scope.lastEventTimestamp = 0;
+  $scope.lastEventTimestamp = localStorage.getItem('lastEventTimestamp') || 0;
 
   $scope.handleMessage = function(msg){
     $scope.counters = msg.counters;
@@ -55,6 +55,9 @@ angular.module( 'hackaton.home', [
     }), $scope.eventsQueue);
     if(typeof $scope.eventsQueue[0] !== 'undefined'){
         $scope.lastEventTimestamp = $scope.eventsQueue[0].created_unix;
+        if($scope.eventsQueue.length >= 10){
+          localStorage.setItem('lastEventTimestamp', $scope.eventsQueue[9].created_unix);
+        }
     }
     $scope.$apply();
   };
