@@ -59,6 +59,7 @@ angular.module( 'hackaton.home', [
     $scope.pullRequest = {};
     $scope.pullRequestsQueue = [];
     $scope.lastPullRequestTimestamp = localStorage.getItem('lastPullRequestTimestamp') || 0;
+    $scope.indicator = 'disconnected';
 
     var sounds = {
         'mexican': {
@@ -149,7 +150,7 @@ angular.module( 'hackaton.home', [
             }
 
             if (!$scope.showPullRequest) {
-                $scope._playSound('beep');    
+                $scope._playSound('beep');
             }
 
             if (row.type == 'PullRequestEvent' && row.created_unix > $scope.lastPullRequestTimestamp) {
@@ -163,12 +164,15 @@ angular.module( 'hackaton.home', [
     };
 
     $scope.$on('socketConnect', function(){
+        $scope.indicator = 'connected';
         console.log('socket connect listener', arguments);
     });
     $scope.$on('socketClose', function(){
+        $scope.indicator = 'disconnected';
         console.log('socket close listener', arguments);
     });
     $scope.$on('socketError', function(){
+        $scope.indicator = 'disconnected';
         console.log('socket error listener', arguments);
     });
     $scope.$on('socketMessage', function(event, originalMessage, parsedMessage){
