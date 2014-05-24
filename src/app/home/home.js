@@ -105,16 +105,25 @@ angular.module( 'hackaton.home', [
 
     };
 
+    $scope.hidePullRequestModal  = function() {
+        console.log('hide pull request modal');
+        $scope.showPullRequest = false;
+    };
+
 
     $scope.handlePullRequestModal = function() {
+
+        console.log('handlePullRequestModal', $scope.pullRequestsQueue);
 
         var pr = $scope.pullRequestsQueue.pop();
 
         if(pr) {
             $scope.pullRequest = pr;
             $scope.showPullRequest = true;
-        } else {
-            $scope.showPullRequest = false;
+            $scope._playSound('mexican');
+            setTimeout($scope.hidePullRequestModal, 10000);
+        } else {  
+            console.log('pull request info not found');
         }
 
     };
@@ -133,7 +142,9 @@ angular.module( 'hackaton.home', [
                 $scope.events.pop();
             }
 
-            $scope._playSound('beep');
+            if (!$scope.showPullRequest) {
+                $scope._playSound('beep');    
+            }
 
             if (row.type == 'PullRequestEvent') {
                 $scope.pullRequestsQueue.unshift(row);
@@ -173,7 +184,7 @@ angular.module( 'hackaton.home', [
     socketService.connect();
 
     setInterval($scope.addLabel.bind($scope), 2000);
-    setInterval($scope.handlePullRequestModal.bind($scope), 60000);
+    setInterval($scope.handlePullRequestModal.bind($scope), 14000);
 })
 
 ;
