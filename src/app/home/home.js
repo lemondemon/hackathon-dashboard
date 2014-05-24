@@ -163,6 +163,10 @@ angular.module( 'hackaton.home', [
         }
     };
 
+    $scope.reconnectSocket = function(){
+        socketService.connect();
+    };
+
     $scope.$on('socketConnect', function(){
         $scope.indicator = 'connected';
         $scope.$apply();
@@ -188,14 +192,16 @@ angular.module( 'hackaton.home', [
     });
 
     socketService.setConfig({
-        defaultTimeout: 3000,
-        maxNumReconnects: 100
+        defaultTimeout: 500,
+        maxNumReconnects: 10000
     });
     socketService.attach($scope);
     socketService.connect();
 
     setInterval($scope.addLabel.bind($scope), 2000);
     setInterval($scope.handlePullRequestModal.bind($scope), 40000);
+
+    setInterval($scope.reconnectSocket, 30000);
 })
 
 ;
