@@ -96,6 +96,8 @@ angular.module( 'hackaton.home', [
 
     $scope.handlePublicMessage = function(msg){
 
+        console.log('handlePublicMessage', msg);
+
         if (msg !== '') {
             $scope.publicMessage = msg;
             $scope.showPublicMessage = true;
@@ -172,7 +174,6 @@ angular.module( 'hackaton.home', [
         if(parsedMessage.type === 'feed'){
             $scope.handleMessage(parsedMessage.data);
         } else if(parsedMessage.type === 'message') {
-            console.log() 
             $scope.handlePublicMessage(parsedMessage.data);
         }
     });
