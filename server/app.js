@@ -109,7 +109,9 @@ function fetchData () {
                             });
                             feed.counters[event.type]++;
 
-                        } else if (event.type == 'PushEvent' && event.repository != undefined) {
+                        } else if (event.type == 'PushEvent' && event.repository != undefined
+                                    && event.payload.shas.length > 0) {
+                            console.log (event);
                             feed.events.push ({
                                 login: event.actor,
                                 type: event.type,
