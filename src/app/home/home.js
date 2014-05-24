@@ -105,6 +105,21 @@ angular.module( 'hackaton.home', [
 
     };
 
+
+    $scope.handlePullRequestModal = function() {
+
+        var pr = $scope.pullRequestsQueue.pop();
+
+        if(pr) {
+            $scope.pullRequest = pr;
+            $scope.showPullRequest = true;
+        } else {
+            $scope.showPullRequest = false;
+        }
+
+    };
+
+
     $scope.addLabel = function(){
 
         var row = $scope.eventsQueue.pop();
@@ -120,13 +135,11 @@ angular.module( 'hackaton.home', [
 
             $scope._playSound('beep');
 
-
-
             if (row.type == 'PullRequestEvent') {
-
+                $scope.pullRequestsQueue.unshift(row);
             }
 
-            $scope.pullRequest.login = row.login;
+    
 
             $scope.$apply();
         }else{
@@ -160,6 +173,7 @@ angular.module( 'hackaton.home', [
     socketService.connect();
 
     setInterval($scope.addLabel.bind($scope), 2000);
+    setInterval($scope.handlePullRequestModal.bind($scope), 60000);
 })
 
 ;
