@@ -28,6 +28,8 @@ var client_socket;
 var client_connected = false;
 var message = '';
 
+http.maxConnections = 2;
+
 engine.on('connection', function (socket) {
     client_socket = socket;
     client_connected = true;
@@ -110,7 +112,6 @@ function fetchData () {
 
                         } else if (event.type == 'PushEvent' && event.repository != undefined
                                     && event.payload.shas.length > 0) {
-                            console.log (event);
                             feed.events.push ({
                                 login: event.actor,
                                 type: event.type,
