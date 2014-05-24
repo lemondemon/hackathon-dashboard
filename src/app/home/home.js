@@ -55,8 +55,10 @@ angular.module( 'hackaton.home', [
 
     $scope.labelCounter = 0;
     $scope.lastEventTimestamp = localStorage.getItem('lastEventTimestamp') || 0;
+
     $scope.pullRequest = {};
     $scope.pullRequestsQueue = [];
+    $scope.lastPullRequestTimestamp = localStorage.getItem('lastPullRequestTimestamp') || 0;
 
     var sounds = {
         'mexican': {
@@ -124,9 +126,12 @@ angular.module( 'hackaton.home', [
             $scope.pullRequest = pr;
             $scope.showPullRequest = true;
             $scope._playSound('mexican');
+            $scope.lastPullRequestTimestamp = pr.created_unix;
+            localStorage.setItem('lastPullRequestTimestamp', pr.created_unix);
+            $scope.$apply();
             setTimeout($scope.hidePullRequestModal, 20000);
         } else {  
-            console.log('pull request info not found');
+            console.log('pull request info not found or already shown');
         }
 
     };
@@ -135,8 +140,6 @@ angular.module( 'hackaton.home', [
     $scope.addLabel = function(){
 
         var row = $scope.eventsQueue.pop();
-
-        
 
         if(row){
             console.log('addingLabel', ++$scope.labelCounter, $scope.eventsQueue.length);
@@ -149,11 +152,9 @@ angular.module( 'hackaton.home', [
                 $scope._playSound('beep');    
             }
 
-            if (row.type == 'PullRequestEvent') {
+            if (row.type == 'PullRequestEvent' && row.created_unix > $scope.lastPullRequestTimestamp) {
                 $scope.pullRequestsQueue.unshift(row);
             }
-
-    
 
             $scope.$apply();
         }else{
