@@ -165,14 +165,17 @@ angular.module( 'hackaton.home', [
 
     $scope.$on('socketConnect', function(){
         $scope.indicator = 'connected';
+        $scope.$apply();
         console.log('socket connect listener', arguments);
     });
     $scope.$on('socketClose', function(){
         $scope.indicator = 'disconnected';
+        $scope.$apply();
         console.log('socket close listener', arguments);
     });
     $scope.$on('socketError', function(){
         $scope.indicator = 'disconnected';
+        $scope.$apply();
         console.log('socket error listener', arguments);
     });
     $scope.$on('socketMessage', function(event, originalMessage, parsedMessage){
