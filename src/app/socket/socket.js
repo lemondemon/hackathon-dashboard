@@ -31,7 +31,9 @@ angular.module( 'socket', [])
         }
         if (me._canReconnect()) {
             try {
-                me.socket = eio('ws://fixfusion-server.herokuapp.com:80/');
+                me.socket = eio('ws://fixfusion-server.herokuapp.com:80/', {
+                    transports: ['websocket']
+                });
                 //console.log(me, me.socket);
                 me._addSocketEvents();
             } catch (e) {
