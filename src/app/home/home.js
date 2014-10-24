@@ -90,9 +90,9 @@ angular.module( 'hackaton.home', [
         }), $scope.eventsQueue);
         if(typeof $scope.eventsQueue[0] !== 'undefined'){
             $scope.lastEventTimestamp = $scope.eventsQueue[0].created_unix;
-            if($scope.eventsQueue.length > 5){
-                localStorage.setItem('lastEventTimestamp', $scope.eventsQueue[5].created_unix);
-            }
+            
+            
+            
         }
         $scope.$apply();
     };
@@ -145,11 +145,16 @@ angular.module( 'hackaton.home', [
         if(row){
             console.log('addingLabel', ++$scope.labelCounter, $scope.eventsQueue.length);
             $scope.events.unshift(row);
+
+            localStorage.setItem('lastEventTimestamp', row.created_unix);
+
             if($scope.events.length > 5){
                 $scope.events.pop();
             }
 
-            if (!$scope.showPullRequest && row.created_unix > $scope.lastEventTimestamp) {
+            
+
+            if (!$scope.showPullRequest) {
                 $scope._playSound('beep');
             }
 
