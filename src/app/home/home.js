@@ -149,7 +149,7 @@ angular.module( 'hackaton.home', [
                 $scope.events.pop();
             }
 
-            if (!$scope.showPullRequest) {
+            if (!$scope.showPullRequest && row.created_unix > $scope.lastEventTimestamp) {
                 $scope._playSound('beep');
             }
 
