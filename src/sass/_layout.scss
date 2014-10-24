@@ -17,6 +17,8 @@ body {
 .messages {
 	position: absolute;
 
+	z-index: -2;
+
 	.message {
 		@include pie-clearfix;
 		height: 214px;
