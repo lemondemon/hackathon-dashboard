@@ -103,7 +103,6 @@ function fetchData () {
                                 commits: event.payload.pull_request.commits,
                                 additions: event.payload.pull_request.additions,
                                 deletions: event.payload.pull_request.deletions,
-                                gravatar: event.actor_attributes.gravatar_id,
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
                             });
