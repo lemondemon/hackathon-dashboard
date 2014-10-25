@@ -257,12 +257,13 @@ body {
 .connectionStatus {
 	@include border-radius(75px);
 
-	height: 150px;
+	height: auto;
 	opacity: 0.5;
 	position: absolute;
 	right: 0;
 	top: 0;
-	width: 150px;
+	bottom: 0;
+	width: 10px;
 
 	&.connected {
 		background: green;
