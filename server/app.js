@@ -64,7 +64,7 @@ function sendMessage () {
             data: S(message).escapeHTML().s
         }
         client_socket.send (JSON.stringify(data));
-    }    
+    }
 }
 
 function fetchData () {
@@ -119,7 +119,6 @@ function fetchData () {
                                 repo: event.repository.name,
                                 branch: event.payload.ref,
                                 title: event.payload.shas[0][2],
-                                gravatar: event.actor_attributes.gravatar_id,
                                 created_at: created.fromNow (),
                                 created_unix: created.unix(),
                             });
@@ -137,7 +136,7 @@ function fetchData () {
         });
         feed.timestamp = moment();
         console.log ('Data fetched:', feed.timestamp.format(), feed.counters);
-        
+
         if (client_connected) {
             var data = {
                 type: 'feed',
